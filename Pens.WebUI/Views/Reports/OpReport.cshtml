@@ -1,0 +1,128 @@
+﻿@model IEnumerable<Pens.WebUI.Models.StatisticOperativDoc>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>    
+    <link href="~/Content/reports.css" rel="stylesheet" />
+    <title>Оперативная отчетность</title>
+</head>
+<body>
+    <div class="content"> 
+        <div>
+            Оперативная отчетность
+        </div>       
+
+@foreach (var item in Model)
+{
+    <div>
+       @item.BranchTitle
+    </div>
+    <div>
+        <table class="table" style="width:100%">
+            <thead>
+                <tr>
+                    <th>
+                        №п/п
+                    </th>
+                    <th>
+                        ФИО
+                    </th>
+                    <th>
+                        Дата рождения
+                    </th>
+                    <th>
+                        Документ
+                    </th>
+                    <th>
+                        Организация
+                    </th>
+                    <th>
+                        Степень родства
+                    </th>
+                    <th>
+                        ФИО Родственника
+                    </th>
+                    <th>
+                        № Удостоверения
+                    </th>
+                    <th>
+                        Услуга
+                    </th>
+                    <th>
+                        Себестоимость
+                    </th>
+                    <th>
+                        Тариф ОМС
+                    </th>
+                    <th>
+                        Количество
+                    </th>
+                    <th>
+                        Возмещение
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @{int i = 0;}
+                @foreach (var docs in item.BranchDocs)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@docs.FIO</td>
+                        <td>@docs.DateBirth</td>
+                        <td>@docs.Pasport</td>
+                        <td>@docs.Org</td>
+                        <td>@docs.StRod</td>
+                        <td>@docs.FIORod</td>
+                        <td>@docs.NoTK </td>
+                        <td>@docs.Services.First().Title </td>
+                        <td>@string.Format("{0:0.00}", docs.Services.First().Cost) </td>
+                        <td>@string.Format("{0:0.00}", docs.Services.First().CostR) </td>
+                        <td>@string.Format("{0:0.00}", docs.Services.First().Quantity) </td>
+                        <td>@string.Format("{0:0.00}", ((docs.Services.First().CostR - docs.Services.First().Cost) * docs.Services.First().Quantity)) </td>
+                    </tr>
+                    foreach (var service in docs.Services.Skip(1))
+                    {                       
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>@service.Title </td>
+                            <td>@string.Format("{0:0.00}", service.Cost)</td>
+                            <td>@string.Format("{0:0.00}", service.CostR) </td>
+                            <td>@string.Format("{0:0.00}", service.Quantity)</td>
+                            <td>@string.Format("{0:0.00}", ((service.CostR - service.Cost) * service.Quantity)) </td>
+                        </tr>
+                    }
+
+                }
+                <tr>
+                    <td colspan="9" style="text-align:right;border:none;"><strong>Итого</strong></td>
+                    <td class="text-center">@item.NupPeople</td>
+                    <td class="text-right">@string.Format("{0:0.00}", item.SummPrice)</td>
+                    <td class="text-right">@string.Format("{0:0.00}", item.SummSeb)</td>
+                    <td class="text-right">@string.Format("{0:0.00}", item.SummDif)</td>
+                </tr>
+               
+            </tbody>
+        </table>
+    </div>
+
+}        
+   
+    </div>
+    
+</body>
+</html>

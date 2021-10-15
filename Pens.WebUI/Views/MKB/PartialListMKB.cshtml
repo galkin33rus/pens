@@ -1,0 +1,32 @@
+﻿@using Pens.WebUI.HtmlHelpers
+@using Pens.WebUI.Models
+@model MKBListView
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <ul class="list-inline">
+            <li>@Ajax.ActionLink("Все", "PartialListMKB", new { category = "" }, new AjaxOptions { UpdateTargetId = "resultIndexMKB" })</li>
+            @foreach (string item in ViewBag.Alfabeta)
+            {
+                <li>
+                    @if (ViewBag.Category != item)
+                    {
+                        @Ajax.ActionLink(item, "PartialListMKB", new { category = item }, new AjaxOptions { UpdateTargetId = "resultIndexMKB" })
+                    }
+                    else
+                    {
+                        @item
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div id="resultMKBList" class="col-sm-12">
+        @Html.Partial("PartialDataListMKB", Model)
+    </div>
+</div>    
+
+       
