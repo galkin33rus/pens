@@ -1,0 +1,124 @@
+﻿@model Pens.Domain.Entities.Pacients
+
+
+
+@using (Ajax.BeginForm("Edit", "Pacients", new AjaxOptions()
+{
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.ReplaceWith,
+    OnSuccess = "SavePass"
+
+}, new { id = "partitalPacientForm"}))
+{    
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Пациент</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        @Html.HiddenFor(model => model.PacientID, new { htmlAttributes = new { @class = "form-control" } })
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FIO, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.FIO, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.FIO, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.DateBirth, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-2">
+                                @Html.EditorFor(model => model.DateBirth, new { htmlAttributes = new { @class = "form-control data-input" } })
+                            </div>
+                            @Html.ValidationMessageFor(model => model.DateBirth, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-2">
+                                <select id="Gender" name="Gender" class="form-control">
+                                    @foreach (var gender in ViewBag.Gender)
+                                    {
+                                        <option value="@gender" @(gender == Model.Gender ? "selected" : "")>@gender</option>
+                                    }
+                                </select>
+
+                            </div>
+                            @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.OrgID, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-8">
+                                @Html.DropDownListFor(model => model.OrgID, ViewBag.Org as SelectList, "", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.OrgID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PositionID, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-3">
+                                @Html.DropDownListFor(model => model.PositionID, ViewBag.Position as SelectList, "", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.PositionID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Pasport, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.Pasport, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Pasport, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.NoTK, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.NoTK, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.NoTK, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StRodID, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.StRodID, ViewBag.StRod as SelectList, "", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.StRodID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FIORod, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.FIORod, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.FIORod, "", new { @class = "text-danger" })
+                            </div>
+                        </div>                       
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnSavePacient" class="btn btn-primary">Сохранить</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+
+                </div>
+            </div>
+        </div>
+
+    <script type="text/javascript" language="javascript">        
+        if ($("#modalNewPacient #DateBirth").val() === "01.01.0001") {
+            $("#modalNewPacient #DateBirth").val('');
+        }       
+    </script>
+}
+

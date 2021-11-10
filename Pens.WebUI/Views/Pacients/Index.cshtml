@@ -1,0 +1,32 @@
+﻿@model Pens.WebUI.Models.PacientsListView
+
+@{
+    ViewBag.Title = "Пациенты";
+}
+
+<script src="~/Scripts/bootstrap.js"></script>
+<script src="~/Scripts/main/pacients.js"></script>
+
+<div class="page-header">
+    <h2>Пациенты</h2>
+</div>
+
+<div class="container">
+    <div class="row">
+        <p> <input type="button" id="searchPacientsNew" class="btn btn-success" value="Добавить пациента" />  </p>
+    </div>
+
+    <div class="row">
+        <div id="modalPacientsResult">
+            @Html.Partial("PatienPartitalList", Model);
+        </div>  
+   
+    </div>
+
+</div>
+<div class="modal fade" id="modalNewPacient" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"></div>
+<script>    
+    var UrlGetPacientsData = '@Url.Action("PatienPartitalList", "Pacients")';
+    var UrlPacientsPartial = '@Url.Action("Partial", "Pacients")';
+    var UrlGetPacientDataJson = '@Url.Action("GetPacientDataJson", "Pacients")';
+</script>
