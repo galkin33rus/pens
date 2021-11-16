@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Abstract\BranchFacade.cs" />
     <Compile Include="Abstract\DocFacade.cs" />
+    <Compile Include="Abstract\MKBFacade.cs" />
     <Compile Include="Abstract\UserFacade.cs" />
     <Compile Include="Concrete\BranchRepository.cs" />
     <Compile Include="Concrete\DocsRepository.cs" />
