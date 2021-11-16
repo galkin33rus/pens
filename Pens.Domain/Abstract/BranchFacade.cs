@@ -10,15 +10,34 @@ namespace Pens.Domain.Abstract
 {
     public class BranchFacade
     {
+        static BranchRepository branchRepository = new BranchRepository();
+
         public static List<Branch> GetBranches(String login)
         {
-            UserRepository userRepository = new UserRepository();
-            BranchRepository branchRepository = new BranchRepository();
-
-            Users user = userRepository.Users.Where(m => m.Login == login).FirstOrDefault();
+            Users user = UserFacade.GetUser(login); 
 
             List<Branch> branchList = branchRepository.Branch.Where(x => x.BranchID == user.BranchId || user.BranchId == null).ToList();
             return branchList;
+        }
+
+        public static object GetBranches()
+        {
+            return branchRepository.Branch;
+        }
+
+        public static Branch GetById(long BranchID)
+        {
+            return branchRepository.GetById(BranchID);
+        }
+
+        public static void Save(Branch branch)
+        {
+            branchRepository.Save(branch);
+        }
+
+        public static void Delete(long BranchID)
+        {
+            branchRepository.Delete(BranchID);
         }
     }
 }

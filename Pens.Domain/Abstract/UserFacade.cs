@@ -26,7 +26,10 @@ namespace Pens.Domain.Abstract
 
             return isValid;
         }
-
         
+        internal static Users GetUser(string login)
+        {
+            return usersRepository.Users.Where(m => m.Login == login).FirstOrDefault();
+        }
     }
 }
