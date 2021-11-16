@@ -1,4 +1,5 @@
-﻿using Pens.Domain.Concrete;
+﻿using Pens.Domain.Abstract;
+using Pens.Domain.Concrete;
 using Pens.Domain.Entities;
 using Pens.WebUI.Models;
 using System;
@@ -12,8 +13,7 @@ namespace Pens.WebUI.Controllers
 {
     public class AccountController : Controller
     {
-        UserRepository usersRepository = new UserRepository();
-
+        
         [AllowAnonymous]
 
         public ActionResult Login()
@@ -26,7 +26,7 @@ namespace Pens.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (ValidateUser(model.UserName, model.Password))
+                if (UserFacade.ValidateUser(model.UserName, model.Password))
                 {
                     FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
                     if (Url.IsLocalUrl(returnUrl))
@@ -45,6 +45,7 @@ namespace Pens.WebUI.Controllers
             }
             return View(model);
         }
+
         public ActionResult LogOff()
         {
             FormsAuthentication.SignOut();
@@ -52,20 +53,5 @@ namespace Pens.WebUI.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        private bool ValidateUser(string login, string password)
-        {
-            bool isValid = false;
-
-
-
-            Users user = usersRepository.Users.Where(x => x.Login == login && x.Password == password).FirstOrDefault();
-
-            if (user != null)
-            {
-                isValid = true;
-            }
-            
-            return isValid;
-        }
     }
 }
