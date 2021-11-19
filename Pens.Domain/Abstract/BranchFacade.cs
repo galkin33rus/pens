@@ -20,7 +20,7 @@ namespace Pens.Domain.Abstract
             return branchList;
         }
 
-        public static object GetBranches()
+        public static IEnumerable<Branch> GetBranches()
         {
             return branchRepository.Branch;
         }

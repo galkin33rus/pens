@@ -1,5 +1,7 @@
-﻿using Pens.Domain.Concrete;
+﻿using Pens.Domain.Abstract;
+using Pens.Domain.Concrete;
 using Pens.Domain.Entities;
+using Pens.WebUI.Classes;
 using Pens.WebUI.Models;
 using System;
 using System.Collections.Generic;
@@ -13,69 +15,37 @@ namespace Pens.WebUI.Controllers
     public class PacientsController : Controller
     {
         public int pageSize = 10;
-
-        PacientsRepository pacientsRepository = new PacientsRepository();
-        BranchRepository branchRepository = new BranchRepository();
-        PositionRepository positionRepository = new PositionRepository();
-        StRodRepository stRodRepository = new StRodRepository();
-        OrgRepository orgRepository = new OrgRepository();
+    
+        
+        
+        
 
         public ActionResult Index(string seachText = "", int page = 1)
         {
-            PacientsListView pacients = new PacientsListView()
-            {
-                Pacients = pacientsRepository.Pacients.Where(x => x.FIO.StartsWith(seachText, StringComparison.OrdinalIgnoreCase)).Skip((page - 1) * pageSize).Take(pageSize),
-                PagingInfo = new PagingInfo()
-                {
-                    CurrentPage = page,
-                    ItemsPerPage = pageSize,
-                    TotalItems = pacientsRepository.Pacients.Where(x => x.FIO.StartsWith(seachText, StringComparison.OrdinalIgnoreCase)).Count()
-                }
-            };
+            PacientsListView pacients = PacientsListViewBuilder.GetPacientsListView(seachText, page, pageSize);
             return View(pacients);
         }
 
         public PartialViewResult GetPacientsData(string seachText = "", int page = 1 )
         {
-            PacientsListView pacients = new PacientsListView()
-            {
-                Pacients = pacientsRepository.Pacients.Where(x => x.FIO.StartsWith(seachText, StringComparison.OrdinalIgnoreCase)).Skip((page - 1) * pageSize).Take(pageSize),
-                PagingInfo = new PagingInfo()
-                {
-                    CurrentPage = page,
-                    ItemsPerPage = pageSize,
-                    TotalItems = pacientsRepository.Pacients.Where(x => x.FIO.StartsWith(seachText, StringComparison.OrdinalIgnoreCase)).Count()
-                }
-            };
+            PacientsListView pacients = PacientsListViewBuilder.GetPacientsListView(seachText, page, pageSize);
             return PartialView(pacients);
         }
 
         public PartialViewResult PatienPartitalList(string seachText = "", int page = 1)
         {
-            PacientsListView pacients = new PacientsListView()
-            {
-                Pacients = pacientsRepository.Pacients.Where(x => x.FIO.StartsWith(seachText, StringComparison.OrdinalIgnoreCase)).Skip((page - 1) * pageSize).Take(pageSize),
-                PagingInfo = new PagingInfo()
-                {
-                    CurrentPage = page,
-                    ItemsPerPage = pageSize,
-                    TotalItems = pacientsRepository.Pacients.Where(x => x.FIO.StartsWith(seachText, StringComparison.OrdinalIgnoreCase)).Count()
-                }
-            };
+            PacientsListView pacients = PacientsListViewBuilder.GetPacientsListView(seachText, page, pageSize);
             return PartialView(pacients);
         }
-        
+
+               
 
         public ActionResult Edit(long PacientID)
         {
-            Pacients pacient = pacientsRepository.GetById(PacientID);
+            Pacients pacient = PacientFacade.GetById(PacientID);
             if (pacient != null)
             {
-                ViewBag.Branch = new SelectList(branchRepository.Branch, "BranchID", "Title");
-                ViewBag.Gender = new string[] { "", "М", "Ж" };
-                ViewBag.Position = new SelectList(positionRepository.Positions, "PositionID", "Title");
-                ViewBag.StRod = new SelectList(stRodRepository.StRod, "StRodID", "Title");
-                ViewBag.Org = new SelectList(orgRepository.Org , "OrgID", "Title");
+                FillViewBag();
                 return View(pacient);
             }
             else
@@ -84,49 +54,41 @@ namespace Pens.WebUI.Controllers
             }
         }
 
+        
         [HttpPost]        
         public ActionResult Edit(Pacients pacient)
         {
             if (ModelState.IsValid)
             {
-                pacientsRepository.Save(pacient);
+                PacientFacade.Save(pacient);
                 return Json(new { Success = true });
             }
             else
             {
-                //return Json(new { Success = false });
-                ViewBag.Branch = new SelectList(branchRepository.Branch, "BranchID", "Title");
-                ViewBag.Gender = new string[] { "", "М", "Ж" };
-                ViewBag.Position = new SelectList(positionRepository.Positions, "PositionID", "Title");
-                ViewBag.StRod = new SelectList(stRodRepository.StRod, "StRodID", "Title");
-                ViewBag.Org = new SelectList(orgRepository.Org, "OrgID", "Title");
+                FillViewBag();
                 return PartialView("Partial", pacient);
             }
         }
 
         public ActionResult Create()
         {
-            ViewBag.Branch = new SelectList(branchRepository.Branch, "BranchID", "Title");
-            ViewBag.Gender = new string[] { "", "М", "Ж" };
-            ViewBag.Position = new SelectList(positionRepository.Positions, "PositionID", "Title");
-            ViewBag.StRod = new SelectList(stRodRepository.StRod, "StRodID", "Title");
-            ViewBag.Org = new SelectList(orgRepository.Org, "OrgID", "Title");
+            FillViewBag();
             return View("Edit", new Pacients());
         }
 
         public ActionResult Delete(long PacientID)
         {
-            Pacients pacient = pacientsRepository.GetById(PacientID);
+            Pacients pacient = PacientFacade.GetById(PacientID);
             if (pacient != null)
             {
-                pacientsRepository.Delete(PacientID);
+                PacientFacade.Delete(PacientID);
             }
             return Redirect("Index");
         }
 
         public JsonResult GetPacientDataJson(long Id = 1)
         {
-            Pacients pacient = pacientsRepository.GetById(Id);
+            Pacients pacient = PacientFacade.GetById(Id);
             return Json(new {
                 fio = pacient.FIO,
                 dateBirth = pacient.DateBirth.ToShortDateString(),
@@ -141,12 +103,8 @@ namespace Pens.WebUI.Controllers
 
         public PartialViewResult Partial(long PacientID = -1)
         {
-            Pacients pacient = pacientsRepository.GetById(PacientID);
-            ViewBag.Branch = new SelectList(branchRepository.Branch, "BranchID", "Title");
-            ViewBag.Gender = new string[] { "", "М", "Ж" };
-            ViewBag.Position = new SelectList(positionRepository.Positions, "PositionID", "Title");
-            ViewBag.StRod = new SelectList(stRodRepository.StRod, "StRodID", "Title");
-            ViewBag.Org = new SelectList(orgRepository.Org, "OrgID", "Title");
+            Pacients pacient = PacientFacade.GetById(PacientID);
+            FillViewBag();
             if (pacient != null)
             {
 
@@ -156,6 +114,15 @@ namespace Pens.WebUI.Controllers
             {
                 return PartialView(new Pacients());
             }
+        }
+
+        private void FillViewBag()
+        {
+            ViewBag.Branch = new SelectList(BranchFacade.GetBranches(), "BranchID", "Title");
+            ViewBag.Gender = new string[] { "", "М", "Ж" };
+            ViewBag.Position = new SelectList(PositionFacade.GetPositions(), "PositionID", "Title");
+            ViewBag.StRod = new SelectList(StRodFacade.GetStRods(), "StRodID", "Title");
+            ViewBag.Org = new SelectList(OrgFacade.GetOrganizations(), "OrgID", "Title");
         }
     }
 }
