@@ -1,4 +1,5 @@
-﻿using Pens.Domain.Concrete;
+﻿using Pens.Domain.Abstract;
+using Pens.Domain.Concrete;
 using Pens.Domain.Entities;
 using Pens.WebUI.Models;
 using System;
@@ -12,56 +13,48 @@ namespace Pens.WebUI.Controllers
     [Authorize]
     public class RegisterController : Controller
     {
-        DocsRepository docsRepository = new DocsRepository();
-        BranchRepository branchRepository = new BranchRepository();
-        PositionRepository positionRepository = new PositionRepository();
-        StRodRepository stRodRepository = new StRodRepository();
-        OrgRepository orgRepository = new OrgRepository();
-        ServicesRepository servicesRepository = new ServicesRepository();
-        PriceRepository priceRepository = new PriceRepository();
-        UserRepository userRepository = new UserRepository();
-
+       
         public int pageSize = 50;
         
         public ActionResult Index(int page = 1)
         {
-            Users user = userRepository.Users.Where(m => m.Login == HttpContext.User.Identity.Name).FirstOrDefault();
+            Users user = UserFacade.GetUser(HttpContext.User.Identity.Name); 
             DateTime dt = DateTime.Now;
-            ViewBag.Branch = new SelectList(branchRepository.Branch.Where(x => x.BranchID == (user.BranchId ?? 0) || user.BranchId == null), "BranchID", "Title", user.BranchId);
+            ViewBag.Branch = new SelectList(BranchFacade.GetBranchesById(user.BranchId), "BranchID", "Title", user.BranchId);
             DocFilter docFilter = new DocFilter();  
             ViewBag.docFilter = docFilter;
             docFilter.BranchID = user.BranchId;
-            IEnumerable<Docs> docs = docsRepository.Docs.Where(x => x.DateDoc >= docFilter.dateFrom && x.DateDoc <= docFilter.dateTo && (x.BranchID == user.BranchId || user.BranchId == null));
+            IEnumerable<Docs> docs = DocFacade.GetDocs(docFilter.dateFrom, docFilter.dateTo, user.BranchId);
             return View(docs);
         }
 
         [HttpPost]
         public ActionResult Index(DocFilter docFilter)
         {
-            Users user = userRepository.Users.Where(m => m.Login == HttpContext.User.Identity.Name).FirstOrDefault();
+            Users user = UserFacade.GetUser(HttpContext.User.Identity.Name); 
             DateTime dt = DateTime.Now;
             if (docFilter.dateFrom == null) { docFilter.dateFrom = new DateTime(dt.Year, dt.Month, 1); }
             if (docFilter.dateTo == null) { docFilter.dateTo = ((DateTime)docFilter.dateFrom).AddMonths(1).AddDays(-1); }
-            IEnumerable<Docs> docs = docsRepository.Docs.Where(x => x.DateDoc >= docFilter.dateFrom && x.DateDoc <= docFilter.dateTo);
+            IEnumerable<Docs> docs = DocFacade.GetDocs(docFilter.dateFrom, docFilter.dateTo);
             if (docFilter.BranchID != null && docFilter.BranchID > 0) {
                 docs = docs.Where(x => x.BranchID == docFilter.BranchID);
             }
-            ViewBag.Branch = new SelectList(branchRepository.Branch.Where(x => x.BranchID == (user.BranchId ?? 0) || user.BranchId == null), "BranchID", "Title", docFilter.BranchID);
+            ViewBag.Branch = new SelectList(BranchFacade.GetBranchesById(user.BranchId), "BranchID", "Title", docFilter.BranchID);
             ViewBag.docFilter = docFilter;
             return View(docs);
         }
 
         public ActionResult Edit(long DocID)
         {
-            Users user = userRepository.Users.Where(m => m.Login == HttpContext.User.Identity.Name).FirstOrDefault();
-            Docs doc = docsRepository.GetById(DocID);
+            Users user = UserFacade.GetUser(HttpContext.User.Identity.Name);
+            Docs doc = DocFacade.GetById(DocID);
             if (doc != null)
             {
-                ViewBag.Branch = new SelectList(branchRepository.Branch.Where(x => x.BranchID == (user.BranchId ?? 0) || user.BranchId == null), "BranchID", "Title", user.BranchId);
+                ViewBag.Branch = new SelectList(BranchFacade.GetBranchesById(user.BranchId), "BranchID", "Title", user.BranchId);
                 ViewBag.Gender = new string[] { "", "М", "Ж" };
-                ViewBag.Position = new SelectList(positionRepository.Positions, "PositionID", "Title");
-                ViewBag.StRod = new SelectList(stRodRepository.StRod, "StRodID", "Title");
-                ViewBag.Org = new SelectList(orgRepository.Org, "OrgID", "Title");             
+                ViewBag.Position = new SelectList(PositionFacade.GetPositions(), "PositionID", "Title");
+                ViewBag.StRod = new SelectList(StRodFacade.GetStRods(), "StRodID", "Title");
+                ViewBag.Org = new SelectList(OrgFacade.GetOrganizations(), "OrgID", "Title");             
                 return View(doc);
             }
             else
@@ -82,7 +75,7 @@ namespace Pens.WebUI.Controllers
                     if (service.PriceID > 0 && service.Quantity > 0)
                     {
                         Services _service = new Services();
-                        Price p = priceRepository.GetById(service.PriceID);
+                        Price p = PriceFacade.GetById(service.PriceID);
                         _service.PriceID = p.PriceID;
                         _service.Kod = p.Kod;
                         _service.Cost = p.Cost;
@@ -94,12 +87,12 @@ namespace Pens.WebUI.Controllers
                     }
                 }
                 doc.Services = null;
-                docsRepository.Save(doc);
-                servicesRepository.DeleteByDocId(doc.DocID);
+                DocFacade.Save(doc);
+                ServiceFacade.DeleteByDocId(doc.DocID);
                 foreach (Services s in _services)
                 {
                     s.DocID = doc.DocID;
-                    servicesRepository.Save(s);
+                    ServiceFacade.Save(s);
                 }
                 
                 return Redirect("Index");
@@ -107,32 +100,32 @@ namespace Pens.WebUI.Controllers
             else
             {
                 //doc.Services = _services;
-                Users user = userRepository.Users.Where(m => m.Login == HttpContext.User.Identity.Name).FirstOrDefault();
-                ViewBag.Branch = new SelectList(branchRepository.Branch.Where(x => x.BranchID == (user.BranchId ?? 0) || user.BranchId == null), "BranchID", "Title", user.BranchId);
+                Users user = UserFacade.GetUser(HttpContext.User.Identity.Name);
+                ViewBag.Branch = new SelectList(BranchFacade.GetBranchesById(user.BranchId), "BranchID", "Title", user.BranchId);
                 ViewBag.Gender = new string[] { "", "М", "Ж" };
-                ViewBag.Position = new SelectList(positionRepository.Positions, "PositionID", "Title");
-                ViewBag.StRod = new SelectList(stRodRepository.StRod, "StRodID", "Title");
-                ViewBag.Org = new SelectList(orgRepository.Org, "OrgID", "Title");
+                ViewBag.Position = new SelectList(PositionFacade.GetPositions(), "PositionID", "Title");
+                ViewBag.StRod = new SelectList(StRodFacade.GetStRods(), "StRodID", "Title");
+                ViewBag.Org = new SelectList(OrgFacade.GetOrganizations(), "OrgID", "Title");
                 return View(doc);
             }
         }
 
         public ActionResult Create()
         {
-            Users user = userRepository.Users.Where(m => m.Login == HttpContext.User.Identity.Name).FirstOrDefault();
-            ViewBag.Branch = new SelectList(branchRepository.Branch.Where(x => x.BranchID == (user.BranchId ?? 0) || user.BranchId == null), "BranchID", "Title", user.BranchId);
+            Users user = UserFacade.GetUser(HttpContext.User.Identity.Name);
+            ViewBag.Branch = new SelectList(BranchFacade.GetBranchesById(user.BranchId), "BranchID", "Title", user.BranchId);
             ViewBag.Gender = new string[] { "", "М", "Ж" };
-            ViewBag.Position = new SelectList(positionRepository.Positions, "PositionID", "Title");
-            ViewBag.StRod = new SelectList(stRodRepository.StRod, "StRodID", "Title");
-            ViewBag.Org = new SelectList(orgRepository.Org, "OrgID", "Title");
+            ViewBag.Position = new SelectList(PositionFacade.GetPositions(), "PositionID", "Title");
+            ViewBag.StRod = new SelectList(StRodFacade.GetStRods(), "StRodID", "Title");
+            ViewBag.Org = new SelectList(OrgFacade.GetOrganizations(), "OrgID", "Title");
             return View("Edit", new Docs() { Date = DateTime.Now, DateDoc = DateTime.Now, BranchID  = user.BranchId??0 });
         }
 
-        public ActionResult Delete(long DocId)
+        public ActionResult Delete(long docId)
         {
-            Docs doc = docsRepository.GetById(DocId);
+            Docs doc = DocFacade.GetById(docId);
             if (doc != null) {
-                docsRepository.Delete(DocId);
+                DocFacade.Delete(docId);
             }
             return Redirect("Index");
         }

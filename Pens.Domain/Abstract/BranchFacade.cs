@@ -1,6 +1,7 @@
 ﻿using Pens.Domain.Concrete;
 using Pens.Domain.Entities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,6 +39,11 @@ namespace Pens.Domain.Abstract
         public static void Delete(long BranchID)
         {
             branchRepository.Delete(BranchID);
+        }
+
+        public static IEnumerable GetBranchesById(long? branchId)
+        {
+            return branchRepository.Branch.Where(x => x.BranchID == (branchId ?? 0) || branchId == null);
         }
     }
 }

@@ -57,6 +57,7 @@
     <Compile Include="Abstract\PacientFacade.cs" />
     <Compile Include="Abstract\PositionFacade.cs" />
     <Compile Include="Abstract\PriceFacade.cs" />
+    <Compile Include="Abstract\ServiceFacade.cs" />
     <Compile Include="Abstract\StRodFacade.cs" />
     <Compile Include="Abstract\UserFacade.cs" />
     <Compile Include="Concrete\BranchRepository.cs" />
