@@ -41,7 +41,7 @@ namespace Pens.Domain.Abstract
             branchRepository.Delete(BranchID);
         }
 
-        public static IEnumerable GetBranchesById(long? branchId)
+        public static IEnumerable<Branch> GetBranchesById(long? branchId)
         {
             return branchRepository.Branch.Where(x => x.BranchID == (branchId ?? 0) || branchId == null);
         }

@@ -23,7 +23,7 @@ namespace Pens.Domain.Abstract
 
         public static IEnumerable<Docs> GetDocs(DateTime? dateFrom, DateTime? dateTo, long? branchId)
         {
-            return docsRepository.Docs.Where(x => x.DateDoc >= dateFrom && x.DateDoc <= dateTo && (x.BranchID == branchId || branchId == null);
+            return docsRepository.Docs.Where(x => x.DateDoc >= dateFrom && x.DateDoc <= dateTo && (x.BranchID == branchId || branchId == null));
         }
 
         public static IEnumerable<Docs> GetDocs(DateTime? dateFrom, DateTime? dateTo)
