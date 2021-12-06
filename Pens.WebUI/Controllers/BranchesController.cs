@@ -1,4 +1,5 @@
-﻿using Pens.Domain.Concrete;
+﻿using Pens.Domain.Abstract;
+using Pens.Domain.Concrete;
 using Pens.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,19 +12,16 @@ namespace Pens.WebUI.Controllers
     [Authorize(Roles = "Administrators")]
     public class BranchesController : Controller
     {
-
-        UserRepository userRepository = new UserRepository();
-        BranchRepository branchRepository = new BranchRepository(); 
         // GET: Branches
         public ActionResult Index()
         {
-            var branches = branchRepository.Branch;
+            var branches = BranchFacade.GetBranches();
             return View(branches);
         }
 
         public ActionResult Edit(long BranchID = 0)
         {
-            Branch branch = branchRepository.GetById(BranchID);
+            Branch branch = BranchFacade.GetById(BranchID);
             if (branch != null)
             {
                 return View(branch);
@@ -39,7 +37,7 @@ namespace Pens.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                branchRepository.Save(branch);
+                BranchFacade.Save(branch);
                 return Redirect("Index");
             }
             else
@@ -50,7 +48,7 @@ namespace Pens.WebUI.Controllers
                 
         public ActionResult Delete(long BranchID = 0)
         {
-            branchRepository.Delete(BranchID);
+            BranchFacade.Delete(BranchID);
             return Redirect("Index");
         }
     }

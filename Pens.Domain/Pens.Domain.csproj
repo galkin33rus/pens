@@ -50,6 +50,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\BranchFacade.cs" />
+    <Compile Include="Abstract\DocFacade.cs" />
+    <Compile Include="Abstract\MKBFacade.cs" />
+    <Compile Include="Abstract\OrgFacade.cs" />
+    <Compile Include="Abstract\PacientFacade.cs" />
+    <Compile Include="Abstract\PositionFacade.cs" />
+    <Compile Include="Abstract\PriceFacade.cs" />
+    <Compile Include="Abstract\ServiceFacade.cs" />
+    <Compile Include="Abstract\StRodFacade.cs" />
+    <Compile Include="Abstract\UserFacade.cs" />
     <Compile Include="Concrete\BranchRepository.cs" />
     <Compile Include="Concrete\DocsRepository.cs" />
     <Compile Include="Concrete\MKBRepository.cs" />
@@ -120,9 +130,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\Reports.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Abstract\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="App.Config" />
     <EntityDeploy Include="Entities\Pens.edmx">

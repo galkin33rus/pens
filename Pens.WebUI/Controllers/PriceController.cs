@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Pens.Domain.Abstract;
 
 namespace Pens.WebUI.Controllers
 {
@@ -15,17 +16,16 @@ namespace Pens.WebUI.Controllers
 
         public int pageSize = 5;
 
-        PriceRepository priceRepository = new PriceRepository();
-        BranchRepository branchRepository = new BranchRepository();
+        
         
         // GET: Price
         public ActionResult Index()
         {
+            IEnumerable<Price> price = PriceFacade.GetPrice();
 
-            IEnumerable<Price> price = priceRepository.Price;
             if (User.IsInRole("Users"))
             {
-                price = price.Where(x => x.IsActive);
+                price = PriceFacade.GetActivePrice();
             }
             return View(price);
         }
@@ -34,12 +34,12 @@ namespace Pens.WebUI.Controllers
         {
             PriceListView price = new PriceListView()
             {
-                Price = priceRepository.Price.Where(x => x.IsActive && ( x.Title.ToUpper().Contains(seachText.ToUpper()) || x.Kod.StartsWith(seachText, StringComparison.OrdinalIgnoreCase))).Skip((page - 1) * pageSize).Take(pageSize),
+                Price = PriceFacade.GetSearchText(seachText, pageSize, page),                
                 PagingInfo = new PagingInfo()
                 {
                     CurrentPage = page,
                     ItemsPerPage = pageSize,
-                    TotalItems = priceRepository.Price.Where(x => x.IsActive && (x.Title.ToUpper().Contains(seachText.ToUpper()) || x.Kod.StartsWith(seachText, StringComparison.OrdinalIgnoreCase))).Count()
+                    TotalItems = PriceFacade.GetTotalItems(seachText)
                 }
             };
 
@@ -49,10 +49,10 @@ namespace Pens.WebUI.Controllers
 
         public ActionResult Edit(long PriceId = 0)
         {
-            Price price = priceRepository.GetById(PriceId);
+            Price price = PriceFacade.GetById(PriceId);
             if (price != null)
             {
-                ViewBag.Branch = new SelectList(branchRepository.Branch, "BranchID", "Title"); 
+                ViewBag.Branch = new SelectList(BranchFacade.GetBranches(), "BranchID", "Title"); 
                 return View(price);
             }
             else {
@@ -65,31 +65,31 @@ namespace Pens.WebUI.Controllers
         {            
             if (ModelState.IsValid)
             {
-                priceRepository.Save(price);
+                PriceFacade.Save(price);
                 return Redirect("Index");
             }
             else {
-                ViewBag.Branch = new SelectList(branchRepository.Branch, "BranchID", "Title"); 
+                ViewBag.Branch = new SelectList(BranchFacade.GetBranches(), "BranchID", "Title"); 
                 return View(price);
             }
         }
 
         public ActionResult Create()
         {
-            Price price = new Price();            
-            ViewBag.Branch = new SelectList(branchRepository.Branch, "BranchID", "Title"); 
+            Price price = new Price();
+            ViewBag.Branch = new SelectList(BranchFacade.GetBranches(), "BranchID", "Title"); 
             return View("Edit", price);
         }
 
         public ActionResult Delete(long PriceID = 0)
-        {            
-            priceRepository.Delete(PriceID);
+        {
+            PriceFacade.Delete(PriceID);
             return Redirect("Index");
         }
 
         public JsonResult GetPriceDataJson(long Id = 0)
         {
-            Price price = priceRepository.GetById(Id);
+            Price price = PriceFacade.GetById(Id);
             return Json(new
             {
                 priceID = price.PriceID,

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Pens.Domain.Concrete;
-using Pens.Domain.Entities;
 using Pens.WebUI.Models;
+using Pens.Domain.Abstract;
 
 namespace Pens.WebUI.Controllers
 {
@@ -14,7 +13,7 @@ namespace Pens.WebUI.Controllers
     {
 
         public int pageSize = 10;
-        MKBRepository mKBRepository = new MKBRepository();
+       
 
         public ActionResult Index()
         {            
@@ -25,16 +24,16 @@ namespace Pens.WebUI.Controllers
         {
             MKBListView mkbView = new MKBListView
             {
-                MKB = mKBRepository.MKB.Where(x => x.TitleEn.Contains(category)).Take(pageSize),
+                MKB = MKBFacade.GetByCategory(category, pageSize),
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = 1,
                     ItemsPerPage = pageSize,
-                    TotalItems = mKBRepository.MKB.Where(x => x.TitleEn.Contains(category)).Count()
+                    TotalItems = MKBFacade.GetCount(category)
                 }
             };
 
-            List<string> alfabeta = mKBRepository.MKB.Select(x => x.TitleEn.Substring(0, 1)).Distinct().ToList();
+            List<string> alfabeta = MKBFacade.GetAlfabeta();
             ViewBag.Category = category;
             ViewBag.Alfabeta = alfabeta;
             return PartialView(mkbView);
@@ -44,16 +43,16 @@ namespace Pens.WebUI.Controllers
         {
             MKBListView mkbView = new MKBListView
             {
-                MKB = mKBRepository.MKB.Where(x => x.TitleEn.Contains(category)).Skip((page - 1) * pageSize).Take(pageSize),
+                MKB = MKBFacade.GetByCategory(category, pageSize, page),
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = page,
                     ItemsPerPage = pageSize,
-                    TotalItems = mKBRepository.MKB.Where(x => x.TitleEn.Contains(category)).Count()
+                    TotalItems = MKBFacade.GetCount(category)
                 }
             };
 
-            List<string> alfabeta = mKBRepository.MKB.Select(x => x.TitleEn.Substring(0, 1)).Distinct().ToList();
+            List<string> alfabeta = MKBFacade.GetAlfabeta();
             ViewBag.Category = category;
             ViewBag.Alfabeta = alfabeta;
             return PartialView(mkbView);
