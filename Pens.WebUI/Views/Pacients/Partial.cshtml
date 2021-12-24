@@ -1,5 +1,7 @@
 ﻿@model Pens.Domain.Entities.Pacients
-
+@{
+    System.Globalization.DateTimeFormatInfo myDTFI = new System.Globalization.CultureInfo("ru-RU").DateTimeFormat;
+}
 
 
 @using (Ajax.BeginForm("Edit", "Pacients", new AjaxOptions()

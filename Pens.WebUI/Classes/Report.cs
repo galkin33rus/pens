@@ -19,7 +19,7 @@ namespace Pens.WebUI.Classes
 
             foreach (var branch in branchList)
             {
-                List<Docs> docStat = DocFacade.GetDocs(docFilter.dateFrom, docFilter.dateTo, branch.BranchID);
+                List<Docs> docStat = DocFacade.GetDocs(docFilter.DateFrom, docFilter.DateTo, branch.BranchID);
                 statDocList.Add(new StatisticDoc
                 {
                     BranchTitle = branch.Title,

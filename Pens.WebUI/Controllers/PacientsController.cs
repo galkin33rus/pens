@@ -88,10 +88,11 @@ namespace Pens.WebUI.Controllers
 
         public JsonResult GetPacientDataJson(long Id = 1)
         {
+            System.Globalization.DateTimeFormatInfo myDTFI = new System.Globalization.CultureInfo("ru-RU").DateTimeFormat;
             Pacients pacient = PacientFacade.GetById(Id);
             return Json(new {
                 fio = pacient.FIO,
-                dateBirth = pacient.DateBirth.ToShortDateString(),
+                dateBirth = ((DateTime)pacient.DateBirth).ToString(myDTFI.ShortDatePattern),
                 gender= pacient.Gender,
                 org = pacient.Organizations.Title,
                 position = pacient.Positions.Title,

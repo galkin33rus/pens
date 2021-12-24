@@ -3,8 +3,9 @@
 @using Pens.WebUI.Models
 @{
     ViewBag.Title = "Журнал документов";
-    DateTime start = ViewBag.docFilter.dateFrom;
-    DateTime end = ViewBag.docFilter.dateTo;    
+    String start = ViewBag.docFilter.DateFromShortDateString;
+    String end = ViewBag.docFilter.DateToShortDateString;
+    System.Globalization.DateTimeFormatInfo myDTFI = new System.Globalization.CultureInfo("ru-RU").DateTimeFormat;
 }
 
 <div class="page-header">
@@ -21,10 +22,10 @@
                 <label class="control-label col-md-1 text-right">Период:</label>
             </div>
             <div class="form-group">
-                <div class="col-md-2"> @Html.TextBox("dateFrom", start.ToShortDateString(), new { @class = "form-control data-input text-center" }) </div>
+                <div class="col-md-2"> @Html.TextBox("DateFromShortDateString", start, new { @class = "form-control data-input text-center" }) </div>
             </div>
             <div class="form-group">
-                <div class="col-md-2"> @Html.TextBox("dateTo", end.ToShortDateString(), new { @class = "form-control data-input text-center" }) </div>
+                <div class="col-md-2"> @Html.TextBox("DateToShortDateString", end, new { @class = "form-control data-input text-center" }) </div>
             </div><div class="form-group">
                 <div class="col-md-2"> @Html.DropDownList("BranchID", ViewBag.Branch as SelectList, "Выберите отделение", new { @class = "form-control" })</div>
             </div>
@@ -53,7 +54,7 @@
             {
                 <tr>
                     <td class="text-center">@item.DocID</td>
-                    <td class="text-center">@(((DateTime)item.DateDoc).ToShortDateString())</td>
+                    <td class="text-center">@(((DateTime)item.DateDoc).ToString(myDTFI.ShortDatePattern))</td>
                     <td class="text-center">@item.Branch.Title</td>
                     <td class="text-center">@Html.ActionLink(String.Format("{0} ({1})", item.FIO, item.DateBirth), "Edit", new { item.DocID })</td>
                     <td class="text-center">@item.Services.Sum(x => x.CostR * x.Quantity)</td>

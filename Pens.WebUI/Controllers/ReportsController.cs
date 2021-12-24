@@ -31,13 +31,13 @@ namespace Pens.WebUI.Controllers
         {
             Users user = UserFacade.GetUser(HttpContext.User.Identity.Name);
             ViewBag.Branch = new SelectList(BranchFacade.GetBranchesById(user.BranchId), "BranchID", "Title", user.BranchId);
-            DateTime DateFrom = docFilter.dateFrom??DateTime.Now;
-            DateTime DateTo = docFilter.dateTo??DateTime.Now;
+            DateTime DateFrom = docFilter.DateFrom??DateTime.Now;
+            DateTime DateTo = docFilter.DateTo??DateTime.Now;
             List<StatisticOperativDoc> statDocList = new List<StatisticOperativDoc>();
             List<Branch> branchList = BranchFacade.GetBranchesById(user.BranchId).ToList();
             foreach (var branch in branchList)
             {
-                var docStat = DocFacade.GetDocs(docFilter.dateFrom, docFilter.dateTo, branch.BranchID);
+                var docStat = DocFacade.GetDocs(docFilter.DateFrom, docFilter.DateTo, branch.BranchID);
                 if (docStat.Count() > 0) {                  
                     statDocList.Add(new StatisticOperativDoc
                     {

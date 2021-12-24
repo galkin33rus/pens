@@ -34,7 +34,7 @@ namespace Pens.Domain.Entities
         [Display(Name = "ФИО родственника")]
         public string FIORod { get; set; }
         public System.DateTime Date { get; set; }       
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd.MM.yyyy}")]
         [Display(Name = "Дата документа")]
         public Nullable<System.DateTime> DateDoc { get; set; }
         [Display(Name = "Номер трудовой книжки")]

@@ -1,8 +1,8 @@
 ﻿
 @{
     ViewBag.Title = "Отчеты";
-    DateTime start = ViewBag.docFilter.dateFrom;
-    DateTime end = ViewBag.docFilter.dateTo;  
+    String start = ViewBag.docFilter.DateFromShortDateString;
+    String end = ViewBag.docFilter.DateToShortDateString;  
 }
 
 
@@ -20,10 +20,10 @@
                 <label class="control-label col-md-1 text-right">Период:</label>
             </div>
             <div class="form-group">
-                <div class="col-md-2"> @Html.TextBox("dateFrom", start.ToShortDateString(), new { @class = "form-control data-input text-center" }) </div>
+                <div class="col-md-2"> @Html.TextBox("DateFromShortDateString", start, new { @class = "form-control data-input text-center" }) </div>
             </div>
             <div class="form-group">
-                <div class="col-md-2"> @Html.TextBox("dateTo", end.ToShortDateString(), new { @class = "form-control data-input text-center" }) </div>
+                <div class="col-md-2"> @Html.TextBox("DateToShortDateString", end, new { @class = "form-control data-input text-center" }) </div>
             </div><div class="form-group">
                 <div class="col-md-2"> @Html.DropDownList("BranchID", ViewBag.Branch as SelectList, "Выберите отделение", new { @class = "form-control" })</div>
             </div>

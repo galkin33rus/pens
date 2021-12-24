@@ -24,7 +24,7 @@ namespace Pens.WebUI.Controllers
             DocFilter docFilter = new DocFilter();  
             ViewBag.docFilter = docFilter;
             docFilter.BranchID = user.BranchId;
-            IEnumerable<Docs> docs = DocFacade.GetDocs(docFilter.dateFrom, docFilter.dateTo, user.BranchId);
+            IEnumerable<Docs> docs = DocFacade.GetDocs(docFilter.DateFrom, docFilter.DateTo, user.BranchId);
             return View(docs);
         }
 
@@ -33,9 +33,9 @@ namespace Pens.WebUI.Controllers
         {
             Users user = UserFacade.GetUser(HttpContext.User.Identity.Name); 
             DateTime dt = DateTime.Now;
-            if (docFilter.dateFrom == null) { docFilter.dateFrom = new DateTime(dt.Year, dt.Month, 1); }
-            if (docFilter.dateTo == null) { docFilter.dateTo = ((DateTime)docFilter.dateFrom).AddMonths(1).AddDays(-1); }
-            IEnumerable<Docs> docs = DocFacade.GetDocs(docFilter.dateFrom, docFilter.dateTo);
+            if (docFilter.DateFrom == null) { docFilter.DateFrom = new DateTime(dt.Year, dt.Month, 1); }
+            if (docFilter.DateTo == null) { docFilter.DateTo = ((DateTime)docFilter.DateFrom).AddMonths(1).AddDays(-1); }
+            IEnumerable<Docs> docs = DocFacade.GetDocs(docFilter.DateFrom, docFilter.DateTo);
             if (docFilter.BranchID != null && docFilter.BranchID > 0) {
                 docs = docs.Where(x => x.BranchID == docFilter.BranchID);
             }
