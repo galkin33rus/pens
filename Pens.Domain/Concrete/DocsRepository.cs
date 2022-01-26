@@ -14,7 +14,7 @@ namespace Pens.Domain.Concrete
 
         public IEnumerable<Docs> Docs
         {
-            get { return context.Docs; }
+            get { return context.Docs.Include("Branch").Include("Services"); }
         }
 
         public void Save(Docs doc)
