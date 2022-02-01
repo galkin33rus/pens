@@ -57,6 +57,7 @@
     <Compile Include="Abstract\PacientFacade.cs" />
     <Compile Include="Abstract\PositionFacade.cs" />
     <Compile Include="Abstract\PriceFacade.cs" />
+    <Compile Include="Abstract\RoleFacade.cs" />
     <Compile Include="Abstract\ServiceFacade.cs" />
     <Compile Include="Abstract\StRodFacade.cs" />
     <Compile Include="Abstract\UserFacade.cs" />
@@ -82,6 +83,8 @@
     <Compile Include="Entities\Display\Pacients.cs" />
     <Compile Include="Entities\Display\Price.cs" />
     <Compile Include="Entities\Display\PriceMetaData.cs" />
+    <Compile Include="Entities\Display\Users.cs" />
+    <Compile Include="Entities\Display\UsersMetaData.cs" />
     <Compile Include="Entities\Docs.cs">
       <DependentUpon>Pens.tt</DependentUpon>
     </Compile>

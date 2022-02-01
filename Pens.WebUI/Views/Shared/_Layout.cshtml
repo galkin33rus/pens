@@ -43,12 +43,15 @@
                         <li>@Html.ActionLink("МКБ-10", "Index", "MKB", new { area = "" }, new { @class = "navbar-nav" })</li>
                     </ul>
                     @if (User.IsInRole("Administrators"))
-                    {
+                    {                        
                         <ul class="nav navbar-nav">
                             <li>@Html.ActionLink("Отчеты", "Index", "Reports", new { area = "" }, new { @class = "navbar-nav" })</li>
                         </ul>
                         <ul class="nav navbar-nav">
                             <li>@Html.ActionLink("Отделения", "Index", "Branches", new { area = "" }, new { @class = "navbar-nav" })</li>
+                        </ul>
+                        <ul class="nav navbar-nav">
+                            <li>@Html.ActionLink("Пользователи", "Index", "Users", new { area = "" }, new { @class = "navbar-nav" })</li>
                         </ul>
                     }
                     
