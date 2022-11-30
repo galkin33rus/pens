@@ -32,5 +32,25 @@ namespace Pens.Domain.Abstract
             return usersRepository.Users.Where(m => m.Login == login).FirstOrDefault();
         }
 
+        public static Users GetById(int userId)
+        {
+            return usersRepository.GetById(userId);
+        }
+
+        public static void Save(Users user)
+        {
+            usersRepository.Save(user);
+        }
+
+        public static void Delete(int userId)
+        {
+            usersRepository.Delete(userId);
+        }
+
+
+        public static IEnumerable<Users> GetUsers()
+        {
+            return usersRepository.Users;
+        }
     }
 }
